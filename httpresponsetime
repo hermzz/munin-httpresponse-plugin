@@ -18,7 +18,9 @@ Arthur Debert <arthur@stimuli.com.br>
 http://www.stimuli.com.br
 FreeBSD licensed 
 '''
-import sys, os
+import sys, os, re
+
+re_clean_url = re.compile('[^a-zA-Z0-9]')
 
 # the main configuration node
 config  =  {
@@ -59,7 +61,9 @@ def get_printable_url(url):
     '''
     import urlparse
     parsed = urlparse.urlsplit (url)
-    return ("%s_%s_%s" % (parsed[1] , parsed[2], parsed[3])).replace("/", "_").replace(".", "_")
+    # urlsplit returns a 6-tuple with the following elements
+    # scheme://netloc/path;parameters?query#fragment
+    return re_clean_url.sub('_',  ("%s_%s_%s" % (parsed[1] , parsed[2], parsed[4])))
 
 def get_request_time(url):
     '''
